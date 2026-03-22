@@ -96,7 +96,13 @@ const password = "STJTGPSOCCOM2026";
 let isAdmin=false;
 let editIndex=-1; // TRACK EDITING
 
-let members = JSON.parse(localStorage.getItem("members")) || [];
+let members =  [
+   {
+  name: "YOUR NAME",
+  photo: "PASTE IMAGE LINK HERE",
+  links: ["https://facebook.com/yourprofile"]
+} 
+  ];
 let fb = localStorage.getItem("fb") || "https://www.facebook.com/JamestheGreater1609";
 
 document.getElementById("parishFB").href = fb;
