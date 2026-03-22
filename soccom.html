@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SOCCOM – St. James the Great Parish</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{font-family: Arial, sans-serif;margin:0;background:linear-gradient(135deg,#0b1a3a,#1d3c78);color:white;text-align:center;}
+#loader{position:fixed;width:100%;height:100vh;background:#0b1a3a;display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:999;}
+#loader img{width:140px;animation:spin 3s linear infinite;}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.container{padding:20px;max-width:900px;margin:auto;}
+.logoRow{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:15px;}
+.logoRow img{width:90px;animation:float 4s ease-in-out infinite;}
+@keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+h1{color:gold;margin-bottom:5px;}h2{margin-top:0;font-weight:normal;}
+.card{background:white;color:black;padding:15px;border-radius:12px;margin:10px;box-shadow:0 0 10px rgba(0,0,0,.3);} 
+button{background:gold;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;margin:5px;font-weight:bold;}
+button:hover{background:orange;}
+.member{display:flex;align-items:center;justify-content:space-between;background:#f3f3f3;margin:8px;padding:10px;border-radius:10px;}
+.member img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid gold;}
+.memberName{cursor:pointer;font-weight:bold;color:#1d3c78;}
+#adminPanel{display:none;background:#ffffff22;padding:15px;border-radius:10px;margin-top:20px;}
+input{padding:6px;margin:4px;border-radius:5px;border:none;width:200px;}
+.socialBtn{display:inline-block;margin:6px;padding:10px 14px;border-radius:8px;color:white;text-decoration:none;font-weight:bold;}
+.fb{background:#1877f2}.tiktok{background:black}.gmail{background:#d93025}.messenger{background:#0084ff}.instagram{background:#e1306c}.other{background:#555}
+#modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;}
+#modalContent{background:white;color:black;padding:20px;border-radius:12px;width:300px;animation:float 3s infinite;}
+.closeBtn{background:red;color:white;}
+.editBtn{background:#1d3c78;color:white;}
+</style>
+</head>
+
+<body>
+
+<div id="loader">
+<img src="ministry_logo.png">
+<h2>SOCCOM</h2>
+</div>
+
+<div class="container" id="main" style="display:none">
+
+<div class="logoRow">
+<img src="diocese_logo.png">
+<img src="parish_logo.png">
+<img src="ministry_logo.png">
+</div>
+
+<h1>ST. JAMES THE GREAT PARISH</h1>
+<h2>Bolinao, Pangasinan</h2>
+<h2>Social Communication Ministry</h2>
+<h3>(SOCCOM)</h3>
+
+<div class="card">
+<h2>Official Facebook</h2>
+<a id="parishFB" href="https://www.facebook.com/JamestheGreater1609" target="_blank">
+<button><i class="fa-brands fa-facebook"></i> Visit Facebook</button>
+</a>
+</div>
+
+<div class="card">
+<h2>SOCCOM Members</h2>
+<div id="members"></div>
+</div>
+
+<button onclick="adminLogin()">Admin Login</button>
+
+<div id="adminPanel">
+<h2>Admin Panel</h2>
+<input id="name" placeholder="Member name">
+<input id="photo" placeholder="Photo URL">
+<input id="links" placeholder="Paste links separated by comma">
+<br>
+<button onclick="addOrUpdateMember()" id="addBtn">Add Member</button>
+<button onclick="cancelEdit()" style="display:none" id="cancelBtn">Cancel</button>
+<h3>Edit Parish Facebook</h3>
+<input id="fbInput" placeholder="Facebook link">
+<button onclick="saveFB()">Save</button>
+</div>
+
+</div>
+
+<div id="modal">
+<div id="modalContent">
+<h2 id="modalName"></h2>
+<div id="socialArea"></div>
+<button class="closeBtn" onclick="closeModal()">Close</button>
+</div>
+</div>
+
+<script>
+
+const password = "STJTGPSOCCOM2026";
+let isAdmin=false;
+let editIndex=-1; // TRACK EDITING
+
+let members = JSON.parse(localStorage.getItem("members")) || [];
+let fb = localStorage.getItem("fb") || "https://www.facebook.com/JamestheGreater1609";
+
+document.getElementById("parishFB").href = fb;
+document.getElementById("fbInput").value = fb;
+
+function display(){
+let area = document.getElementById("members");
+area.innerHTML="";
+
+members.forEach((m,i)=>{
+
+let div = document.createElement("div");
+div.className="member";
+
+let left = document.createElement("div");
+left.style.display="flex";
+left.style.alignItems="center";
+left.style.gap="10px";
+
+let img = document.createElement("img");
+img.src=m.photo;
+
+let name=document.createElement("div");
+name.className="memberName";
+name.innerText=m.name;
+name.onclick=()=>showLinks(m);
+
+left.appendChild(img);
+left.appendChild(name);
+
+div.appendChild(left);
+
+if(isAdmin){
+
+let controls=document.createElement("div");
+
+let edit=document.createElement("button");
+edit.innerText="Edit";
+edit.className="editBtn";
+edit.onclick=()=>editMember(i);
+
+let del=document.createElement("button");
+del.innerText="Delete";
+del.onclick=()=>{
+members.splice(i,1);
+save();
+}
+
+controls.appendChild(edit);
+controls.appendChild(del);
+
+div.appendChild(controls);
+}
+
+area.appendChild(div);
+
+});
+}
+
+function editMember(i){
+let m=members[i];
+
+document.getElementById("name").value=m.name;
+document.getElementById("photo").value=m.photo;
+document.getElementById("links").value=m.links.join(",");
+
+editIndex=i;
+
+document.getElementById("addBtn").innerText="Update Member";
+document.getElementById("cancelBtn").style.display="inline-block";
+
+window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function cancelEdit(){
+editIndex=-1;
+
+document.getElementById("name").value="";
+document.getElementById("photo").value="";
+document.getElementById("links").value="";
+
+document.getElementById("addBtn").innerText="Add Member";
+document.getElementById("cancelBtn").style.display="none";
+}
+
+function showLinks(member){
+
+document.getElementById("modal").style.display="flex";
+document.getElementById("modalName").innerText=member.name;
+
+let area=document.getElementById("socialArea");
+area.innerHTML="";
+
+member.links.forEach(link=>{
+
+let a=document.createElement("a");
+a.href=link.trim();
+a.target="_blank";
+a.className="socialBtn";
+
+if(link.includes("facebook")){
+a.classList.add("fb");
+a.innerHTML='<i class="fa-brands fa-facebook"></i> Facebook';
+}
+else if(link.includes("tiktok")){
+a.classList.add("tiktok");
+a.innerHTML='<i class="fa-brands fa-tiktok"></i> TikTok';
+}
+else if(link.includes("messenger")){
+a.classList.add("messenger");
+a.innerHTML='<i class="fa-brands fa-facebook-messenger"></i> Messenger';
+}
+else if(link.includes("gmail")||link.includes("mailto")){
+a.classList.add("gmail");
+a.innerHTML='<i class="fa-solid fa-envelope"></i> Gmail';
+}
+else if(link.includes("instagram")){
+a.classList.add("instagram");
+a.innerHTML='<i class="fa-brands fa-instagram"></i> Instagram';
+}
+else{
+a.classList.add("other");
+a.innerHTML='<i class="fa-solid fa-link"></i> Link';
+}
+
+area.appendChild(a);
+
+});
+
+}
+
+function closeModal(){document.getElementById("modal").style.display="none";}
+
+function addOrUpdateMember(){
+let n=document.getElementById("name").value;
+let p=document.getElementById("photo").value;
+let l=document.getElementById("links").value.split(",");
+
+if(editIndex==-1){
+members.push({name:n,photo:p,links:l});
+}else{
+members[editIndex]={name:n,photo:p,links:l};
+}
+
+cancelEdit();
+save();
+}
+
+function save(){
+localStorage.setItem("members",JSON.stringify(members));
+display();
+}
+
+function adminLogin(){
+let pass=prompt("Enter admin password");
+
+if(pass===password){
+isAdmin=true;
+
+document.getElementById("adminPanel").style.display="block";
+display();
+}else{
+alert("Wrong password");
+}
+}
+
+function saveFB(){
+let link=document.getElementById("fbInput").value;
+localStorage.setItem("fb",link);
+document.getElementById("parishFB").href=link;
+}
+
+setTimeout(()=>{
+document.getElementById("loader").style.display="none";
+document.getElementById("main").style.display="block";
+},2500);
+
+display();
+
+</script>
+
+</body>
+</html>
