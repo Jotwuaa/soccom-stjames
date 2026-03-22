@@ -96,13 +96,24 @@ const password = "STJTGPSOCCOM2026";
 let isAdmin=false;
 let editIndex=-1; // TRACK EDITING
 
-let members =  [
-   {
-  name: "YOUR NAME",
-  photo: "PASTE IMAGE LINK HERE",
-  links: ["https://facebook.com/yourprofile"]
-} 
-  ];
+let members =  [                                 
+  {
+    name: "JOSHUA CELZO",
+    photo: "https://scontent.fcrk1-4.fna.fbcdn.net/v/t39.30808-1/634787265_910405928591525_9108394296951911287_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=109&ccb=1-7&_nc_sid=1d2534&_nc_eui2=AeF4NpOd-yGBXhSVdgQb2ty26Sa3PvoSnXvpJrc--hKde8_kEN5A0bNH0ZiNS0xCMAh92xAZU-d3jemY3-W9BtV-&_nc_ohc=v0tcpScjwdoQ7kNvwGwX6yP&_nc_oc=Adp57311QB3ujifdqMY9UVFIKIhwZsTLvRC4pcW9g_O21ofGK6tfoHOtZu2rPYO-Yw8&_nc_zt=24&_nc_ht=scontent.fcrk1-4.fna&_nc_gid=cuqOhn4E7q8vJGkbO1mJOw&_nc_ss=7a32e&oh=00_AfyrsBHAicil46draHLQszRA_SdHEgXORP7Y-mP-IHHaPA&oe=69C576FB",
+    links: ["https://www.facebook.com/joca.celzo,https://www.instagram.com/j0twua?igsh=M3BrYjZmZmU0azQ2,tiktok.com/@jotwua"]
+  },
+  {
+    name: "YESHA MARIE UY",
+    photo: "https://scontent.fcrk1-2.fna.fbcdn.net/v/t39.30808-1/559068034_1358900392417148_4624747855427330826_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=110&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeFKouGxzv_j9OCHWntxCURb-hPKKDqy-mL6E8ooOrL6Ykq-iKF8xCVWcD_ZVEFJHiQM03nNAzIZ089Sm6VHBD4U&_nc_ohc=-gekEAowEywQ7kNvwGXzian&_nc_oc=Ado5eJJaUNhCs4c1ljeGKxoLnloq8sgKRhkiQd6hATYkgqqlFbtCa5LXBltRSS6b09U&_nc_zt=24&_nc_ht=scontent.fcrk1-2.fna&_nc_gid=lNIJHFFSTdtMMNgQdLcvqg&_nc_ss=7a32e&oh=00_AfzgJjRUR5yvAn9GAPocwAV-hwT7BtjcHniO6KNVc89Pww&oe=69C59CEA   ",
+    links: ["https://www.facebook.com/share/1AFCYtswFE/,https://www.instagram.com/sjjsy_?igsh=cnB4aW5vdWhsZXQ0"]
+  },
+  {
+    name: "YVONNE NICOLE UY",
+    photo: "https://scontent.fcrk1-5.fna.fbcdn.net/v/t39.30808-1/620063772_4539900852952853_5613720233588566216_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=105&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeFMD4ZGPRTJKSq0zSQgylSABglwgFwTwSgGCXCAXBPBKHaxUiNI269OR686KDEfGHzydHCQLVNs_OAcqZwNXZJs&_nc_ohc=jax_lLOayukQ7kNvwFPrS94&_nc_oc=AdptDveONqMXbomMRGlQ1YgZRCks90snVMWpTiT2o8sukp3jiXGyhIH4Rw9ez1ieMq0&_nc_zt=24&_nc_ht=scontent.fcrk1-5.fna&_nc_gid=9DGRl9FkFwCL5vRBEaOVSg&_nc_ss=7a32e&oh=00_AfxGBYeixnY6XQdiDr8HRyBKVh-aL7gf6RNS_KT4uUfnsg&oe=69C5B320   ",      
+    links: ["https://www.facebook.com/yvonnenicole.uy,"]
+  }
+];
+  ];   
 let fb = localStorage.getItem("fb") || "https://www.facebook.com/JamestheGreater1609";
 
 document.getElementById("parishFB").href = fb;
@@ -279,7 +290,7 @@ setTimeout(()=>{
 document.getElementById("loader").style.display="none";
 document.getElementById("main").style.display="block";
 },2500);
-
+   
 display();
 
 </script>
