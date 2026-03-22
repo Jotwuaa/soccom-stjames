@@ -96,7 +96,28 @@ const password = "STJTGPSOCCOM2026";
 let isAdmin=false;
 let editIndex=-1; // TRACK EDITING
 
-let members = JSON.parse(localStorage.getItem("members")) || [];
+let members =  [];
+  async function loadMembers(){
+  const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRcbMGD5W2R_BS50xbn5PrhK-ie0odB5TPv6-bFWLo7oXf6Jm19iNCNY6KmH-MnejiyM52BQzTj0jd8/pub?output=csv");
+  const text = await res.text();
+
+  const rows = text.split("\n").slice(1);
+
+  members = rows
+    .filter(row => row.trim() !== "")
+    .map(row => {
+      const parts = row.split(",");
+
+      const name = parts[0]?.trim();
+      const photo = parts[1]?.trim();
+      const links = parts.slice(2).join(",").trim();
+
+      return {
+        name: name,
+        photo: photo,
+        links: links ? links.split(",") : []
+      };
+    });
 let fb = localStorage.getItem("fb") || "https://www.facebook.com/JamestheGreater1609";
 
 document.getElementById("parishFB").href = fb;
